@@ -14,10 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - URL-based configuration loading
 - Built-in editor integration with `--edit` flag
 - Press 'e' during selection to edit mcpServers.json
+- `--binding` flag to capture servers from .claude.json back to mcpServers.json
 - Automatic backup creation before modifications
 - Comprehensive test suite
 - Installation via Makefile
 - Support for Linux and WSL2
+- Makefile commands for backup management (list-backups, clean-backups)
 
 ### Features
 - Sync MCP servers between mcpServers.json and ~/.claude.json

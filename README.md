@@ -254,6 +254,17 @@ mcp-sync --url https://your-team.com/mcp-config.json
 mcp-sync --url https://gist.githubusercontent.com/user/id/raw/mcpServers.json
 ```
 
+#### Capture Servers from Claude Desktop
+
+```bash
+# If you've added servers directly in Claude Desktop,
+# capture them back to your mcpServers.json
+mcp-sync --binding
+
+# This will add any servers that exist in .claude.json
+# but not in mcpServers.json, then proceed with normal sync
+```
+
 #### Backup and Restore
 
 ```bash
@@ -285,6 +296,7 @@ cp ~/.claude.backup.20240101_120000.json ~/.claude.json
 - `--mcp-file, -m`: Path to mcpServers.json file (default: `mcpServers.json`)
 - `--url, -u`: URL to fetch mcpServers.json from (overrides --mcp-file)
 - `--edit, -e`: Edit mcpServers.json before syncing (not available with --url)
+- `--binding, -b`: Update mcpServers.json with servers from .claude.json (not available with --url)
 - `--claude-config, -c`: Path to .claude.json file (default: `~/.claude.json`)
 - `--help, -h`: Show help message
 

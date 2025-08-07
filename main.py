@@ -184,12 +184,18 @@ def main():
     parser.add_argument('--mcp-file', '-m', type=str, default='mcpServers.json', help='Path to mcpServers.json file')
     parser.add_argument('--url', '-u', type=str, help='URL to fetch mcpServers.json from (overrides --mcp-file)')
     parser.add_argument('--edit', '-e', action='store_true', help='Edit mcpServers.json before syncing (not available with --url)')
+    parser.add_argument('--binding', '-b', action='store_true', help='Update mcpServers.json with servers from .claude.json (not available with --url)')
     parser.add_argument('--claude-config', '-c', type=str, default='~/.claude.json', help='Path to .claude.json file')
     args = parser.parse_args()
     
     # Validate that --edit is not used with --url
     if args.edit and args.url:
         print("Error: --edit option cannot be used with --url")
+        sys.exit(1)
+    
+    # Validate that --binding is not used with --url
+    if args.binding and args.url:
+        print("Error: --binding option cannot be used with --url")
         sys.exit(1)
     
     try:
@@ -229,6 +235,33 @@ def run_sync(args):
     # Load Claude configuration
     claude_config = load_json_file(claude_config_path)
     
+    # Get current MCP servers from Claude config
+    current_servers = get_current_mcp_servers(claude_config, args.project)
+    
+    # Handle binding mode - update mcpServers.json with servers from .claude.json
+    if args.binding and not using_url:
+        servers_to_add = {}
+        for server_name, server_config in current_servers.items():
+            if server_name not in available_servers:
+                servers_to_add[server_name] = server_config
+        
+        if servers_to_add:
+            print(f"Found {len(servers_to_add)} server(s) in .claude.json not in mcpServers.json:")
+            for name in servers_to_add:
+                print(f"  - {name}")
+            print()
+            
+            # Update available servers
+            available_servers.update(servers_to_add)
+            
+            # Save updated mcpServers.json
+            save_json_file(mcp_file_path, available_servers, create_backup=True)
+            print(f"\nAdded {len(servers_to_add)} server(s) to mcpServers.json")
+            print("Proceeding with sync...\n")
+        else:
+            print("No new servers found in .claude.json to add to mcpServers.json")
+            print("Proceeding with sync...\n")
+    
     # Check if no MCP servers are available
     if not available_servers:
         if args.url:
@@ -244,9 +277,6 @@ def run_sync(args):
             print('    "url": "http://localhost:8765/mcp/claude/sse"')
             print('  }')
         sys.exit(0)
-    
-    # Get current MCP servers
-    current_servers = get_current_mcp_servers(claude_config, args.project)
     
     # Display target information
     if args.project:
