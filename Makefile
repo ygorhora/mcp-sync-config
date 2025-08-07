@@ -124,4 +124,25 @@ uninstall: ## Remove installed script
 .PHONY: clean
 clean: ## Clean generated files
 	@rm -f $(WRAPPER_SCRIPT)
+	@rm -rf .coverage htmlcov .pytest_cache
+	@find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 	@echo "Cleaned generated files"
+
+.PHONY: test
+test: ## Run tests
+	@echo "Running tests..."
+	@uv sync --extra test
+	@uv run pytest
+
+.PHONY: test-coverage
+test-coverage: ## Run tests with coverage report
+	@echo "Running tests with coverage..."
+	@uv sync --extra test
+	@uv run pytest --cov=main --cov-report=term --cov-report=html
+
+
+.PHONY: test-watch
+test-watch: ## Run tests in watch mode
+	@echo "Running tests in watch mode..."
+	@uv sync --extra test
+	@uv run pytest-watch
