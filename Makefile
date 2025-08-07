@@ -132,32 +132,35 @@ clean: ## Clean generated files
 clean-backups: ## Clean .claude.json backup files
 	@echo "Searching for .claude.json backup files in home directory..."
 	@BACKUP_DIR="$${HOME}"; \
-	BACKUP_COUNT=$$(ls $$BACKUP_DIR/.claude.json.backup.* 2>/dev/null | wc -l); \
+	BACKUP_COUNT=$$(ls $$BACKUP_DIR/.claude.backup.*.json 2>/dev/null | wc -l); \
 	if [ $$BACKUP_COUNT -eq 0 ]; then \
 		echo "No backup files found."; \
 	else \
 		echo "Found $$BACKUP_COUNT backup file(s):"; \
-		ls -la $$BACKUP_DIR/.claude.json.backup.* 2>/dev/null | while read line; do \
+		ls -la $$BACKUP_DIR/.claude.backup.*.json 2>/dev/null | while read line; do \
 			echo "  $$line"; \
 		done; \
 		echo ""; \
-		read -p "Delete all backup files? [y/N] " -n 1 -r; \
-		echo ""; \
-		if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
-			rm -f $$BACKUP_DIR/.claude.json.backup.*; \
-			echo "✓ Deleted $$BACKUP_COUNT backup file(s)"; \
-		else \
-			echo "Cancelled. No files deleted."; \
-		fi \
+		printf "Delete all backup files? [y/N] "; \
+		read REPLY; \
+		case $$REPLY in \
+			[yY]) \
+				rm -f $$BACKUP_DIR/.claude.backup.*.json; \
+				echo "✓ Deleted $$BACKUP_COUNT backup file(s)"; \
+				;; \
+			*) \
+				echo "Cancelled. No files deleted."; \
+				;; \
+		esac \
 	fi
 
 .PHONY: list-backups
 list-backups: ## List all .claude.json backup files
 	@echo "Listing .claude.json backup files in home directory..."
 	@BACKUP_DIR="$${HOME}"; \
-	if ls $$BACKUP_DIR/.claude.json.backup.* >/dev/null 2>&1; then \
+	if ls $$BACKUP_DIR/.claude.backup.*.json >/dev/null 2>&1; then \
 		echo "Found backup files:"; \
-		ls -lht $$BACKUP_DIR/.claude.json.backup.* | awk '{print "  " $$9 " (" $$5 ", " $$6 " " $$7 " " $$8 ")"}'; \
+		ls -lht $$BACKUP_DIR/.claude.backup.*.json | awk '{print "  " $$9 " (" $$5 ", " $$6 " " $$7 " " $$8 ")"}'; \
 	else \
 		echo "No backup files found."; \
 	fi

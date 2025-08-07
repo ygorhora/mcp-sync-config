@@ -268,7 +268,7 @@ make clean-backups
 cp ~/.claude.json ~/.claude.json.manual-backup
 
 # Restore from backup
-cp ~/.claude.json.backup.20240101_120000.json ~/.claude.json
+cp ~/.claude.backup.20240101_120000.json ~/.claude.json
 ```
 
 ## How it Works
