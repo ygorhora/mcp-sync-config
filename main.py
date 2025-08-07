@@ -12,6 +12,8 @@ import argparse
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any, Optional, List, Tuple
+import urllib.request
+import urllib.error
 import questionary
 from questionary import Choice
 
@@ -24,6 +26,24 @@ def signal_handler(sig, frame):
 
 # Register signal handler
 signal.signal(signal.SIGINT, signal_handler)
+
+
+def load_json_from_url(url: str) -> Dict[str, Any]:
+    """Load and parse JSON from a URL."""
+    try:
+        print(f"Fetching MCP servers from URL: {url}")
+        with urllib.request.urlopen(url, timeout=10) as response:
+            data = response.read()
+            return json.loads(data.decode('utf-8'))
+    except urllib.error.URLError as e:
+        print(f"Error fetching URL: {e}")
+        sys.exit(1)
+    except json.JSONDecodeError as e:
+        print(f"Error: Invalid JSON from URL: {e}")
+        sys.exit(1)
+    except Exception as e:
+        print(f"Error loading from URL: {e}")
+        sys.exit(1)
 
 
 def load_json_file(filepath: Path, create_if_missing: bool = False) -> Dict[str, Any]:
@@ -135,6 +155,7 @@ def main():
     parser = argparse.ArgumentParser(description='Sync MCP servers between mcpServers.json and ~/.claude.json')
     parser.add_argument('--project', '-p', type=str, help='Project path to update (defaults to global mcpServers)')
     parser.add_argument('--mcp-file', '-m', type=str, default='mcpServers.json', help='Path to mcpServers.json file')
+    parser.add_argument('--url', '-u', type=str, help='URL to fetch mcpServers.json from (overrides --mcp-file)')
     parser.add_argument('--claude-config', '-c', type=str, default='~/.claude.json', help='Path to .claude.json file')
     args = parser.parse_args()
     
@@ -151,23 +172,32 @@ def main():
 def run_sync(args):
     
     # Resolve paths
-    mcp_file_path = Path(args.mcp_file).resolve()
     claude_config_path = Path(args.claude_config).expanduser().resolve()
     
-    # Load configurations
-    available_servers = load_json_file(mcp_file_path, create_if_missing=True)
+    # Load MCP servers from URL or file
+    if args.url:
+        available_servers = load_json_from_url(args.url)
+    else:
+        mcp_file_path = Path(args.mcp_file).resolve()
+        available_servers = load_json_file(mcp_file_path, create_if_missing=True)
+    
+    # Load Claude configuration
     claude_config = load_json_file(claude_config_path)
     
     # Check if no MCP servers are available
     if not available_servers:
-        print("\nNo MCP servers found in mcpServers.json!")
-        print("Please add your MCP server configurations to the file.")
-        print("You can use mcpServers.json.example as a reference.")
-        print("\nExample configuration:")
-        print('  "server-name": {')
-        print('    "type": "sse",')
-        print('    "url": "http://localhost:8765/mcp/claude/sse"')
-        print('  }')
+        if args.url:
+            print(f"\nNo MCP servers found at URL: {args.url}")
+            print("Please ensure the URL returns a valid JSON with MCP server configurations.")
+        else:
+            print("\nNo MCP servers found in mcpServers.json!")
+            print("Please add your MCP server configurations to the file.")
+            print("You can use mcpServers.json.example as a reference.")
+            print("\nExample configuration:")
+            print('  "server-name": {')
+            print('    "type": "sse",')
+            print('    "url": "http://localhost:8765/mcp/claude/sse"')
+            print('  }')
         sys.exit(0)
     
     # Get current MCP servers

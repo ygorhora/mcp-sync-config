@@ -57,6 +57,9 @@ mcp-sync
 # Sync for a specific project
 mcp-sync --project /path/to/your/project
 
+# Load MCP servers from a URL
+mcp-sync --url https://example.com/mcpServers.json
+
 # Show help
 mcp-sync --help
 ```
@@ -72,6 +75,9 @@ uv run python main.py
 # Sync for a specific project
 uv run python main.py --project /path/to/your/project
 
+# Load MCP servers from a URL
+uv run python main.py --url https://example.com/mcpServers.json
+
 # Custom file paths
 uv run python main.py --mcp-file /path/to/mcpServers.json --claude-config /path/to/.claude.json
 ```
@@ -82,13 +88,14 @@ uv run python main.py --mcp-file /path/to/mcpServers.json --claude-config /path/
 - Press Ctrl+C at any time to cancel the operation
 - Shows current status (enabled/disabled) for each server
 - Syncs by server name (e.g., mem0, mcp-postgres-production-phoenix)
+- Load MCP server configurations from a URL
 - Creates automatic backup of `.claude.json` before modifications
 - Supports both global and project-specific mcpServers configurations
 - Preserves all other settings in `.claude.json`
 
 ## How it Works
 
-1. Loads available MCP servers from `mcpServers.json`
+1. Loads available MCP servers from `mcpServers.json` or a URL
 2. Reads current configuration from `~/.claude.json`
 3. Presents an interactive checklist showing all available servers
 4. Updates the configuration based on your selections
@@ -98,6 +105,7 @@ uv run python main.py --mcp-file /path/to/mcpServers.json --claude-config /path/
 
 - `--project, -p`: Project path to update (defaults to global mcpServers)
 - `--mcp-file, -m`: Path to mcpServers.json file (default: `mcpServers.json`)
+- `--url, -u`: URL to fetch mcpServers.json from (overrides --mcp-file)
 - `--claude-config, -c`: Path to .claude.json file (default: `~/.claude.json`)
 - `--help, -h`: Show help message
 
