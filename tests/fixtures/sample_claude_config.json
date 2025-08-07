@@ -1,0 +1,31 @@
+{
+  "mcpServers": {
+    "test-server-1": {
+      "type": "sse",
+      "url": "http://localhost:8001/mcp/sse"
+    }
+  },
+  "projects": {
+    "/home/test/project1": {
+      "allowedTools": [],
+      "history": [],
+      "mcpContextUris": [],
+      "mcpServers": {
+        "test-postgres": {
+          "command": "docker",
+          "args": ["run", "--name", "test-postgres", "-i", "--rm", "postgres-mcp"],
+          "env": {
+            "DATABASE_URI": "postgresql://test:test@localhost:5432/testdb"
+          }
+        }
+      },
+      "enabledMcpjsonServers": [],
+      "disabledMcpjsonServers": [],
+      "hasTrustDialogAccepted": false,
+      "projectOnboardingSeenCount": 0,
+      "hasClaudeMdExternalIncludesApproved": false,
+      "hasClaudeMdExternalIncludesWarningShown": false
+    }
+  },
+  "otherSettings": "preserved"
+}

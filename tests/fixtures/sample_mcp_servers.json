@@ -1,0 +1,17 @@
+{
+  "test-server-1": {
+    "type": "sse",
+    "url": "http://localhost:8001/mcp/sse"
+  },
+  "test-server-2": {
+    "type": "sse", 
+    "url": "http://localhost:8002/mcp/sse"
+  },
+  "test-postgres": {
+    "command": "docker",
+    "args": ["run", "--name", "test-postgres", "-i", "--rm", "postgres-mcp"],
+    "env": {
+      "DATABASE_URI": "postgresql://test:test@localhost:5432/testdb"
+    }
+  }
+}
