@@ -1,52 +1,73 @@
 # MCP Claude Config Sync Tool
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.13+](https://img.shields.io/badge/python-3.13+-blue.svg)](https://www.python.org/downloads/)
+[![Linux](https://img.shields.io/badge/platform-linux-lightgrey.svg)](https://www.linux.org/)
+[![WSL2](https://img.shields.io/badge/platform-wsl2-lightgrey.svg)](https://docs.microsoft.com/en-us/windows/wsl/)
+
 🚀 **Streamline your Claude Desktop MCP server management with a powerful, interactive CLI tool**
+
+<p align="center">
+  <img src="https://github.com/ygorhora/mcp-claude-config/assets/demo.gif" alt="Demo" width="600">
+</p>
+
+## 📖 Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [System Requirements](#system-requirements)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [Development](#development)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Overview
 
 MCP Claude Config Sync Tool is a sophisticated command-line utility designed to simplify the management of Model Context Protocol (MCP) servers in Claude Desktop. Whether you're managing database connections, API integrations, or custom MCP servers, this tool provides an elegant solution for synchronizing configurations across projects.
 
-### Key Capabilities
+## 🎯 Features
 
-- **Interactive Server Management**: Toggle MCP servers on/off with an intuitive checkbox interface
-- **Multi-Project Support**: Manage global configurations or project-specific settings
-- **Remote Configuration Loading**: Fetch MCP configurations from URLs for team standardization
-- **Live Configuration Editing**: Edit your MCP servers directly from the CLI with your preferred editor
-- **Automatic Backups**: Never lose your configurations with automatic timestamped backups
-- **Smart Sync**: Intelligently merges configurations while preserving existing settings
+### Core Features
+- ✨ **Interactive Server Management** - Toggle MCP servers on/off with an intuitive checkbox interface
+- 🎨 **Multi-Project Support** - Manage global configurations or project-specific settings
+- 🌐 **Remote Configuration Loading** - Fetch MCP configurations from URLs for team standardization
+- ✏️ **Live Configuration Editing** - Edit your MCP servers directly from the CLI with your preferred editor
+- 💾 **Automatic Backups** - Never lose your configurations with automatic timestamped backups
+- 🔄 **Smart Sync** - Intelligently merges configurations while preserving existing settings
 
-### Perfect For
+### Why Choose MCP Claude Config?
 
-- **Developers** managing multiple database connections across projects
-- **Teams** standardizing MCP server configurations
-- **DevOps Engineers** automating Claude Desktop setups
-- **Power Users** who prefer CLI over GUI for configuration management
+| Without This Tool | With MCP Claude Config |
+|-------------------|------------------------|
+| ❌ Manually edit JSON files | ✅ Interactive checkbox UI |
+| ❌ Risk syntax errors | ✅ Automatic validation |
+| ❌ No backup system | ✅ Timestamped backups |
+| ❌ Copy configs manually | ✅ One-command sync |
+| ❌ Share via chat/email | ✅ Share URL configs |
 
-## Why Use This Tool?
+## 💻 System Requirements
 
-Managing MCP servers in Claude Desktop manually can be tedious and error-prone. This tool solves common pain points:
+| Component | Requirement |
+|-----------|-------------|
+| **OS** | Linux, macOS, or Windows (WSL2) |
+| **Python** | 3.13 or higher |
+| **Package Manager** | [uv](https://github.com/astral-sh/uv) |
+| **Claude Desktop** | Latest version installed |
 
-- ❌ **Without this tool**: Manually edit JSON files, risk syntax errors, no backup system
-- ✅ **With this tool**: Interactive UI, validation, automatic backups
+## 🛠️ Prerequisites
 
-- ❌ **Without this tool**: Copy configurations between projects manually
-- ✅ **With this tool**: Single command to sync configurations across projects
+Before installing MCP Claude Config, ensure you have:
 
-- ❌ **Without this tool**: Share configurations via chat/email with team members
-- ✅ **With this tool**: Share a URL to standardized configurations
+### 1. Python 3.13 or higher
+```bash
+python --version  # Should show 3.13.x or higher
+```
 
-## System Requirements
+### 2. uv Package Manager
 
-- **Operating System**: Linux or Windows with WSL2
-- **Python**: 3.8 or higher
-- **Package Manager**: [uv](https://github.com/astral-sh/uv) (required for dependency management)
-- **Claude Desktop**: Installed with `.claude.json` configuration file
-
-## Prerequisites
-
-### Install uv (Python Package Manager)
-
-This tool requires `uv` for dependency management. Install it using one of these methods:
+Install `uv` using one of these methods:
 
 ```bash
 # Using curl (recommended)
@@ -59,28 +80,48 @@ pip install uv
 brew install uv
 ```
 
-## Installation
+### 3. Claude Desktop
+Ensure Claude Desktop is installed and has been run at least once to create the configuration file.
 
-### Quick Install (Recommended)
+## 📦 Installation
 
-Once you have `uv` installed, setting up `mcp-sync` is straightforward:
+### Option 1: Quick Install (Recommended)
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/ygorhora/mcp-claude-config.git
 cd mcp-claude-config
 
-# Install for current user (installs to ~/.local/bin)
+# Install for current user (recommended)
 make install
 
 # Or install system-wide (requires sudo)
 make install-system
-
-# Update existing installation
-make update
 ```
 
-After installation, you can run `mcp-sync` from any directory!
+✅ **Success!** You can now run `mcp-sync` from any directory!
+
+### Option 2: Install from Release
+
+```bash
+# Download the latest release
+wget https://github.com/ygorhora/mcp-claude-config/releases/latest/download/mcp-claude-config.tar.gz
+tar -xzf mcp-claude-config.tar.gz
+cd mcp-claude-config
+
+# Install
+make install
+```
+
+### Updating
+
+To update to the latest version:
+
+```bash
+cd mcp-claude-config
+git pull
+make update
+```
 
 ### Manual Setup
 
@@ -148,61 +189,79 @@ uv run python main.py --edit
 uv run python main.py --mcp-file /path/to/mcpServers.json --claude-config /path/to/.claude.json
 ```
 
-## Quick Start Guide
+## 🚀 Quick Start
 
-### 1. First Time Setup
+### Step 1: Initial Setup
 
 ```bash
 # Copy the example configuration
 cp mcpServers.json.example mcpServers.json
 
-# Edit your MCP servers
+# Edit your MCP servers (opens in your default editor)
 mcp-sync --edit
-
-# Or manually edit the file
-nano mcpServers.json
 ```
 
-### 2. Common Workflows
+### Step 2: Sync Your Servers
 
-**Enable/Disable MCP Servers:**
 ```bash
+# Run the interactive sync
 mcp-sync
-# Use ↑↓ to navigate, Space to toggle, Enter to confirm
 ```
 
-**Sync for a Specific Project:**
+You'll see an interactive checklist:
+```
+Syncing global MCP servers
+Available servers: 3
+Currently enabled: 1
+
+Select MCP servers to enable (↑↓ navigate, space to toggle, enter to confirm, Ctrl+C to cancel):
+❯ ◉ mem0 (SSE: http://localhost:8765/mcp/claude/sse/root)
+  ◯ postgres-dev (Command: docker)
+  ◯ my-custom-api (SSE: https://api.example.com/mcp)
+```
+
+### Step 3: Confirm Changes
+
+```
+Enabling servers: postgres-dev
+Disabling servers: my-custom-api
+
+Apply these changes? (y/N)
+```
+
+## 📚 Documentation
+
+### Common Use Cases
+
+#### Managing Development vs Production Servers
+
 ```bash
-mcp-sync --project /home/user/my-project
+# Development environment
+mcp-sync --project ~/dev/my-app
+
+# Production environment  
+mcp-sync --project ~/prod/my-app
 ```
 
-**Use Team Configuration:**
+#### Team Configuration Sharing
+
 ```bash
-mcp-sync --url https://company.com/team-mcp-config.json
+# Load team's standard MCP configuration
+mcp-sync --url https://your-team.com/mcp-config.json
+
+# Or from a GitHub gist
+mcp-sync --url https://gist.githubusercontent.com/user/id/raw/mcpServers.json
 ```
 
-## Features
+#### Backup and Restore
 
-### 🎯 Core Features
+```bash
+# Backups are created automatically, but you can also:
+cp ~/.claude.json ~/.claude.json.manual-backup
 
-- **Interactive Interface**: Navigate with arrow keys, toggle with spacebar
-- **Smart Selection**: See current status of each server at a glance
-- **Project Isolation**: Manage global or project-specific configurations
-- **Live Editing**: Press `--edit` to modify configurations on the fly
-
-### 🛡️ Safety Features
-
-- **Automatic Backups**: Creates timestamped backups before any changes
-- **Validation**: Ensures JSON integrity before saving
-- **Graceful Cancellation**: Press Ctrl+C anytime to exit safely
-- **Preserve Settings**: Never loses your existing Claude configuration
-
-### 🚀 Advanced Features
-
-- **URL Support**: Load configurations from remote servers
-- **Custom Paths**: Override default file locations
-- **Environment Variables**: Respects `$EDITOR` for file editing
-- **Batch Operations**: Enable/disable multiple servers at once
+# Restore from backup
+cp ~/.claude.json.backup.20240101_120000.json ~/.claude.json
+```
 
 ## How it Works
 
@@ -286,10 +345,63 @@ Always use `mcpServers.json.example` as a template and keep your actual configur
 }
 ```
 
-## Contributing
+## 🧪 Development
 
-Contributions are welcome! Feel free to submit issues or pull requests to improve this tool.
+### Running Tests
 
-## License
+```bash
+# Run all tests
+make test
 
-[Add your license here]
+# Run with coverage report
+make test-coverage
+
+# Run in watch mode during development
+make test-watch
+```
+
+### Project Structure
+
+```
+mcp-claude-config/
+├── main.py              # Main application logic
+├── Makefile            # Build and install automation
+├── pyproject.toml      # Project configuration
+├── tests/              # Test suite
+│   ├── test_*.py      # Test modules
+│   └── fixtures/      # Test data
+├── mcpServers.json.example  # Example configuration
+└── README.md           # This file
+```
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+### Quick Contribution Guide
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 👏 Acknowledgments
+
+- Thanks to all contributors who have helped improve this tool
+- Special thanks to the Claude Desktop team for creating the MCP protocol
+- Built with [uv](https://github.com/astral-sh/uv) for fast, reliable Python dependency management
+
+## 📞 Support
+
+- **Issues**: [GitHub Issues](https://github.com/ygorhora/mcp-claude-config/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/ygorhora/mcp-claude-config/discussions)
+- **Email**: ygorhora@gmail.com
+
+---
+
+<p align="center">Made with ❤️ by <a href="https://github.com/ygorhora">Ygor Hora</a></p>

@@ -180,3 +180,22 @@ mcpServers.json
 
 # Generated wrapper script
 mcp-sync
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Test coverage reports
+htmlcov/
+.coverage
+coverage.xml
+*.cover
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
