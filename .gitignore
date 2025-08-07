@@ -177,3 +177,6 @@ pyrightconfig.json
 
 # MCP Configuration
 mcpServers.json
+
+# Generated wrapper script
+mcp-sync
