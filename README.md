@@ -215,7 +215,7 @@ Syncing global MCP servers
 Available servers: 3
 Currently enabled: 1
 
-Select MCP servers to enable (↑↓ navigate, space to toggle, 'e' to edit, enter to confirm, Ctrl+C to cancel):
+Select MCP servers to enable: (Use arrow keys to move, <space> to select, <e> to edit, <a> to toggle, <i> to invert)
 ❯ ◉ mem0 (SSE: http://localhost:8765/mcp/claude/sse/root)
   ◯ postgres-dev (Command: docker)
   ◯ my-custom-api (SSE: https://api.example.com/mcp)

@@ -263,16 +263,20 @@ def run_sync(args):
         # Create interactive selection
         choices = create_server_choices(available_servers, current_servers)
         
-        # Build prompt message with all keyboard shortcuts
+        # Build prompt message
+        prompt_message = "Select MCP servers to enable"
+        
+        # Build instruction text with keyboard shortcuts
         if using_url:
-            prompt_message = "Select MCP servers to enable (↑↓ navigate, space to toggle, enter to confirm, Ctrl+C to cancel):"
+            instruction_text = "(Use arrow keys to move, <space> to select, <a> to toggle, <i> to invert)"
         else:
-            prompt_message = "Select MCP servers to enable (↑↓ navigate, space to toggle, 'e' to edit, enter to confirm, Ctrl+C to cancel):"
+            instruction_text = "(Use arrow keys to move, <space> to select, <e> to edit, <a> to toggle, <i> to invert)"
         
         # Create checkbox prompt
         question = questionary.checkbox(
             prompt_message,
-            choices=choices
+            choices=choices,
+            instruction=instruction_text
         )
         
         # Flag to track if edit was requested
