@@ -120,7 +120,7 @@ wheels = [
 ]
 
 [[package]]
-name = "mcp-claude-config"
+name = "mcp-sync-config"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

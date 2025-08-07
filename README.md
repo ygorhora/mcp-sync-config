@@ -8,7 +8,7 @@
 🚀 **Streamline your Claude Desktop MCP server management with a powerful, interactive CLI tool**
 
 <p align="center">
-  <img src="https://github.com/ygorhora/mcp-claude-config/assets/demo.gif" alt="Demo" width="600">
+  <img src="https://github.com/ygorhora/mcp-sync-config/assets/demo.gif" alt="Demo" width="600">
 </p>
 
 ## 📖 Table of Contents
@@ -90,8 +90,8 @@ Ensure Claude Desktop is installed and has been run at least once to create the 
 
 ```bash
 # Clone the repository
-git clone https://github.com/ygorhora/mcp-claude-config.git
-cd mcp-claude-config
+git clone https://github.com/ygorhora/mcp-sync-config.git
+cd mcp-sync-config
 
 # Install for current user (recommended)
 make install
@@ -106,9 +106,9 @@ make install-system
 
 ```bash
 # Download the latest release
-wget https://github.com/ygorhora/mcp-claude-config/releases/latest/download/mcp-claude-config.tar.gz
-tar -xzf mcp-claude-config.tar.gz
-cd mcp-claude-config
+wget https://github.com/ygorhora/mcp-sync-config/releases/latest/download/mcp-sync-config.tar.gz
+tar -xzf mcp-sync-config.tar.gz
+cd mcp-sync-config
 
 # Install
 make install
@@ -119,7 +119,7 @@ make install
 To update to the latest version:
 
 ```bash
-cd mcp-claude-config
+cd mcp-sync-config
 git pull
 make update
 ```
@@ -385,7 +385,7 @@ make test-watch
 ### Project Structure
 
 ```
-mcp-claude-config/
+mcp-sync-config/
 ├── main.py              # Main application logic
 ├── Makefile            # Build and install automation
 ├── pyproject.toml      # Project configuration
@@ -420,8 +420,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/ygorhora/mcp-claude-config/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/ygorhora/mcp-claude-config/discussions)
+- **Issues**: [GitHub Issues](https://github.com/ygorhora/mcp-sync-config/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/ygorhora/mcp-sync-config/discussions)
 - **Email**: ygorhora@gmail.com
 
 ---

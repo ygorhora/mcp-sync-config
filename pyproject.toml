@@ -1,5 +1,5 @@
 [project]
-name = "mcp-claude-config"
+name = "mcp-sync-config"
 version = "0.1.0"
 description = "Interactive CLI tool for managing Model Context Protocol (MCP) servers in Claude Desktop"
 readme = "README.md"
@@ -24,9 +24,9 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/ygorhora/mcp-claude-config"
-"Bug Tracker" = "https://github.com/ygorhora/mcp-claude-config/issues"
-"Documentation" = "https://github.com/ygorhora/mcp-claude-config#readme"
+"Homepage" = "https://github.com/ygorhora/mcp-sync-config"
+"Bug Tracker" = "https://github.com/ygorhora/mcp-sync-config/issues"
+"Documentation" = "https://github.com/ygorhora/mcp-sync-config#readme"
 
 [project.optional-dependencies]
 test = [
