@@ -9,6 +9,8 @@ import os
 import sys
 import signal
 import argparse
+import subprocess
+import tempfile
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any, Optional, List, Tuple
@@ -151,13 +153,42 @@ def sync_mcp_servers(available_servers: Dict[str, Any], selected_names: List[str
     return new_servers
 
 
+def edit_json_file(filepath: Path) -> bool:
+    """Open JSON file in editor and return True if file was modified."""
+    # Get the editor from environment or use vi as default
+    editor = os.environ.get('EDITOR', 'vi')
+    
+    # Get initial modification time
+    initial_mtime = filepath.stat().st_mtime if filepath.exists() else 0
+    
+    try:
+        # Open the file in the editor
+        subprocess.run([editor, str(filepath)], check=True)
+        
+        # Check if file was modified
+        final_mtime = filepath.stat().st_mtime if filepath.exists() else 0
+        return final_mtime != initial_mtime
+    except subprocess.CalledProcessError:
+        print(f"Error: Failed to open editor '{editor}'")
+        return False
+    except Exception as e:
+        print(f"Error editing file: {e}")
+        return False
+
+
 def main():
     parser = argparse.ArgumentParser(description='Sync MCP servers between mcpServers.json and ~/.claude.json')
     parser.add_argument('--project', '-p', type=str, help='Project path to update (defaults to global mcpServers)')
     parser.add_argument('--mcp-file', '-m', type=str, default='mcpServers.json', help='Path to mcpServers.json file')
     parser.add_argument('--url', '-u', type=str, help='URL to fetch mcpServers.json from (overrides --mcp-file)')
+    parser.add_argument('--edit', '-e', action='store_true', help='Edit mcpServers.json before syncing (not available with --url)')
     parser.add_argument('--claude-config', '-c', type=str, default='~/.claude.json', help='Path to .claude.json file')
     args = parser.parse_args()
+    
+    # Validate that --edit is not used with --url
+    if args.edit and args.url:
+        print("Error: --edit option cannot be used with --url")
+        sys.exit(1)
     
     try:
         run_sync(args)
@@ -174,11 +205,23 @@ def run_sync(args):
     # Resolve paths
     claude_config_path = Path(args.claude_config).expanduser().resolve()
     
+    # Determine if we're using URL or local file
+    using_url = bool(args.url)
+    mcp_file_path = None if using_url else Path(args.mcp_file).resolve()
+    
+    # Handle edit mode if requested
+    if args.edit and not using_url:
+        print(f"Opening {mcp_file_path} in editor...")
+        print("Make your changes and save the file to continue.")
+        if edit_json_file(mcp_file_path):
+            print("\nFile modified. Proceeding with sync...\n")
+        else:
+            print("\nNo changes detected or edit cancelled.")
+    
     # Load MCP servers from URL or file
-    if args.url:
+    if using_url:
         available_servers = load_json_from_url(args.url)
     else:
-        mcp_file_path = Path(args.mcp_file).resolve()
         available_servers = load_json_file(mcp_file_path, create_if_missing=True)
     
     # Load Claude configuration
