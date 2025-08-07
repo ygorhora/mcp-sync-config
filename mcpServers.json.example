@@ -1,0 +1,23 @@
+{
+  "mem0": {
+    "type": "sse",
+    "url": "http://localhost:8765/mcp/claude/sse/root"
+  },
+  "mcp-postgres-example": {
+    "command": "docker",
+    "args": [
+      "run",
+      "--name",
+      "mcp-postgres-example",
+      "-i",
+      "--rm",
+      "-e",
+      "DATABASE_URI",
+      "crystaldba/postgres-mcp",
+      "--access-mode=restricted"
+    ],
+    "env": {
+      "DATABASE_URI": "postgresql://username:password@host:5432/database_name"
+    }
+  }
+}
