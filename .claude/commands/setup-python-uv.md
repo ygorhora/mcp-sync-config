@@ -67,6 +67,11 @@ $ git config --local user.name "<user-name>"
 $ git config --local user.email "<user-email>"
 ```
 
+### Add Remote Origin
+```sh
+$ git remote add origin https://github.com/<username>/<repo-name>.git
+```
+
 ### Initial Commit and Push
 ```sh
 $ git add .
