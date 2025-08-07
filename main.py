@@ -7,12 +7,23 @@ Syncs MCP servers between mcpServers.json and ~/.claude.json
 import json
 import os
 import sys
+import signal
 import argparse
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any, Optional, List, Tuple
 import questionary
 from questionary import Choice
+
+
+def signal_handler(sig, frame):
+    """Handle Ctrl+C and other signals gracefully."""
+    print("\nOperation cancelled.")
+    sys.exit(0)
+
+
+# Register signal handler
+signal.signal(signal.SIGINT, signal_handler)
 
 
 def load_json_file(filepath: Path, create_if_missing: bool = False) -> Dict[str, Any]:
@@ -127,6 +138,18 @@ def main():
     parser.add_argument('--claude-config', '-c', type=str, default='~/.claude.json', help='Path to .claude.json file')
     args = parser.parse_args()
     
+    try:
+        run_sync(args)
+    except KeyboardInterrupt:
+        print("\nOperation cancelled.")
+        sys.exit(0)
+    except EOFError:
+        print("\nOperation cancelled.")
+        sys.exit(0)
+
+
+def run_sync(args):
+    
     # Resolve paths
     mcp_file_path = Path(args.mcp_file).resolve()
     claude_config_path = Path(args.claude_config).expanduser().resolve()
@@ -163,14 +186,22 @@ def main():
     # Create interactive selection
     choices = create_server_choices(available_servers, current_servers)
     
-    selected = questionary.checkbox(
-        "Select MCP servers to enable (use arrow keys to navigate, space to select/deselect, enter to confirm):",
-        choices=choices
-    ).ask()
+    # Create checkbox prompt
+    question = questionary.checkbox(
+        "Select MCP servers to enable (↑↓ navigate, space to toggle, enter to confirm, Ctrl+C to cancel):",
+        choices=choices,
+        instruction=""
+    )
+    
+    try:
+        selected = question.unsafe_ask()  # unsafe_ask allows proper ESC handling
+    except (KeyboardInterrupt, EOFError, Exception) as e:
+        print("\nOperation cancelled.")
+        sys.exit(0)
     
     if selected is None:
-        print("Operation cancelled.")
-        return
+        print("\nOperation cancelled.")
+        sys.exit(0)
     
     # Create new configuration
     new_servers = sync_mcp_servers(available_servers, selected)
@@ -192,9 +223,15 @@ def main():
         return
     
     # Confirm changes
-    if not questionary.confirm("Apply these changes?").ask():
+    try:
+        confirm = questionary.confirm("Apply these changes?").unsafe_ask()
+    except (KeyboardInterrupt, EOFError, Exception):
+        print("\nOperation cancelled.")
+        sys.exit(0)
+    
+    if confirm is None or not confirm:
         print("Operation cancelled.")
-        return
+        sys.exit(0)
     
     # Update configuration
     set_mcp_servers(claude_config, new_servers, args.project)

@@ -79,6 +79,7 @@ uv run python main.py --mcp-file /path/to/mcpServers.json --claude-config /path/
 ## Features
 
 - Interactive checkbox selection using arrow keys
+- Press Ctrl+C at any time to cancel the operation
 - Shows current status (enabled/disabled) for each server
 - Syncs by server name (e.g., mem0, mcp-postgres-production-phoenix)
 - Creates automatic backup of `.claude.json` before modifications
