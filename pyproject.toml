@@ -1,7 +1,7 @@
 [project]
 name = "mcp-sync-config"
 version = "0.1.0"
-description = "Interactive CLI tool for managing Model Context Protocol (MCP) servers in Claude Desktop"
+description = "Interactive CLI tool for managing Model Context Protocol (MCP) servers (currently only Claude Code)"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [

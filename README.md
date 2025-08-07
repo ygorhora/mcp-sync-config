@@ -5,7 +5,7 @@
 [![Linux](https://img.shields.io/badge/platform-linux-lightgrey.svg)](https://www.linux.org/)
 [![WSL2](https://img.shields.io/badge/platform-wsl2-lightgrey.svg)](https://docs.microsoft.com/en-us/windows/wsl/)
 
-🚀 **Streamline your Claude Desktop MCP server management with a powerful, interactive CLI tool**
+🚀 **Streamline your Claude Code MCP server management with a powerful, interactive CLI tool**
 
 <p align="center">
   <img src="https://github.com/ygorhora/mcp-sync-config/assets/demo.gif" alt="Demo" width="600">
@@ -25,7 +25,7 @@
 
 ## Overview
 
-MCP Claude Config Sync Tool is a sophisticated command-line utility designed to simplify the management of Model Context Protocol (MCP) servers in Claude Desktop. Whether you're managing database connections, API integrations, or custom MCP servers, this tool provides an elegant solution for synchronizing configurations across projects.
+MCP Claude Config Sync Tool is a sophisticated command-line utility designed to simplify the management of Model Context Protocol (MCP) servers in Claude Code. Whether you're managing database connections, API integrations, or custom MCP servers, this tool provides an elegant solution for synchronizing configurations across projects.
 
 ## 🎯 Features
 
@@ -55,7 +55,7 @@ MCP Claude Config Sync Tool is a sophisticated command-line utility designed to 
 | **OS** | Linux, macOS, or Windows (WSL2) |
 | **Python** | 3.13 or higher |
 | **Package Manager** | [uv](https://github.com/astral-sh/uv) |
-| **Claude Desktop** | Latest version installed |
+| **Claude Code** | Latest version installed |
 
 ## 🛠️ Prerequisites
 
@@ -81,8 +81,8 @@ pip install uv
 brew install uv
 ```
 
-### 3. Claude Desktop
-Ensure Claude Desktop is installed and has been run at least once to create the configuration file.
+### 3. Claude Code
+Ensure Claude Code is installed and has been run at least once to create the configuration file.
 
 ## 📦 Installation
 
@@ -254,10 +254,10 @@ mcp-sync --url https://your-team.com/mcp-config.json
 mcp-sync --url https://gist.githubusercontent.com/user/id/raw/mcpServers.json
 ```
 
-#### Capture Servers from Claude Desktop
+#### Capture Servers from Claude Code
 
 ```bash
-# If you've added servers directly in Claude Desktop,
+# If you've added servers directly in Claude Code,
 # capture them back to your mcpServers.json
 mcp-sync --binding
 
@@ -330,7 +330,7 @@ Always use `mcpServers.json.example` as a template and keep your actual configur
 - Solution: Install uv following the [Prerequisites](#prerequisites) section
 
 **"Error: File not found: ~/.claude.json"**
-- Solution: Make sure Claude Desktop is installed and has been run at least once
+- Solution: Make sure Claude Code is installed and has been run at least once
 
 **Editor doesn't open with --edit**
 - Solution: Set your preferred editor: `export EDITOR=nano` (or vim, emacs, etc.)
@@ -343,7 +343,7 @@ Always use `mcpServers.json.example` as a template and keep your actual configur
 **Windows Users:**
 - This tool requires WSL2 (Windows Subsystem for Linux)
 - Run all commands inside your WSL2 terminal
-- Claude Desktop config is accessible at `/mnt/c/Users/YourName/AppData/Roaming/Claude/claude.json`
+- Claude Code config is accessible at `/mnt/c/Users/YourName/AppData/Roaming/Claude/claude.json`
 
 **Linux Users:**
 - Works out of the box on all major distributions
@@ -415,7 +415,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👏 Acknowledgments
 
 - Thanks to all contributors who have helped improve this tool
-- Special thanks to the Claude Desktop team for creating the MCP protocol
+- Special thanks to the Claude team for creating the MCP protocol
 - Built with [uv](https://github.com/astral-sh/uv) for fast, reliable Python dependency management
 
 ## 📞 Support
