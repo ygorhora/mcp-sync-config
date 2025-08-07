@@ -1,0 +1,9 @@
+# Additional Ruff configuration (extends pyproject.toml)
+
+[lint.extend-per-file-ignores]
+# Signal handlers require these arguments by convention, and large functions are acceptable in CLI applications
+# DTZ005 is for timezone-aware datetime - we're using UTC for backups which is acceptable
+"main.py" = ["ARG001", "PLR0912", "PLR0915", "DTZ005"]
+
+# Test files can use regular open() for simplicity
+"tests/*.py" = ["PTH123"]

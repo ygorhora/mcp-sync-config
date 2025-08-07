@@ -32,6 +32,76 @@ $ uv init
 $ touch .env
 ```
 
+# Code Quality Setup with Ruff
+
+- Install Ruff as a development dependency:
+```sh
+$ uv add --dev ruff
+```
+
+- Create a basic Ruff configuration in `pyproject.toml`:
+```toml
+[tool.ruff]
+line-length = 120
+target-version = "py313"  # Adjust to your Python version
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "N",    # pep8-naming
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "A",    # flake8-builtins
+    "C4",   # flake8-comprehensions
+    "PIE",  # flake8-pie
+    "PT",   # flake8-pytest-style
+    "RET",  # flake8-return
+    "SIM",  # flake8-simplify
+    "ARG",  # flake8-unused-arguments
+    "PTH",  # flake8-use-pathlib
+    "PL",   # pylint
+    "RUF",  # ruff-specific rules
+]
+ignore = [
+    "E501",     # line too long (handled by formatter)
+    "PLR0913",  # too many arguments
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+```
+
+- Run Ruff to check and format your code:
+```sh
+# Check for linting issues
+$ uv run ruff check .
+
+# Fix auto-fixable issues
+$ uv run ruff check --fix .
+
+# Format code
+$ uv run ruff format .
+```
+
+- (Optional) Add Makefile targets for easier Ruff usage:
+```makefile
+.PHONY: lint
+lint:
+	uv run ruff check .
+
+.PHONY: format
+format:
+	uv run ruff format .
+
+.PHONY: lint-fix
+lint-fix:
+	uv run ruff check --fix .
+```
+
 # Git & GitHub (Only if --git flag is passed)
 
 When `--git` flag is provided, the script will:

@@ -312,12 +312,26 @@ Always use `mcpServers.json.example` as a template and keep your actual configur
 
 ## Makefile Commands
 
+### Installation & Management
 - `make help` - Show all available commands
 - `make install` - Install for current user (default)
 - `make update` - Update installation (uninstall then install)
 - `make install-user` - Install to ~/.local/bin
 - `make install-system` - Install to /usr/local/bin (requires sudo)
 - `make uninstall` - Remove installed script
+
+### Code Quality
+- `make lint` - Run linting with Ruff
+- `make format` - Format code with Ruff
+- `make lint-fix` - Fix linting issues automatically
+- `make check` - Run both linting and tests
+
+### Testing
+- `make test` - Run all tests
+- `make test-coverage` - Run tests with coverage report
+- `make test-watch` - Run tests in watch mode
+
+### Maintenance
 - `make clean` - Clean generated files
 - `make list-backups` - List all .claude.json backup files
 - `make clean-backups` - Clean .claude.json backup files (with confirmation)
@@ -381,6 +395,36 @@ make test-coverage
 # Run in watch mode during development
 make test-watch
 ```
+
+### Code Quality with Ruff
+
+This project uses [Ruff](https://github.com/astral-sh/ruff) for linting and code formatting. Ruff is configured to enforce consistent code style and catch common errors.
+
+```bash
+# Run linting checks
+make lint
+
+# Format code automatically
+make format
+
+# Fix linting issues automatically
+make lint-fix
+
+# Run both linting and tests
+make check
+```
+
+#### Ruff Configuration
+
+The project's Ruff configuration can be found in:
+- `pyproject.toml` - Main configuration with enabled rules
+- `.ruff.toml` - Additional per-file ignores
+
+Key settings:
+- Line length: 120 characters
+- Target Python version: 3.13
+- Enabled rule sets: pycodestyle, pyflakes, isort, pep8-naming, and more
+- Automatic import sorting and formatting
 
 ### Project Structure
 

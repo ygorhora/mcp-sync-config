@@ -183,3 +183,24 @@ test-watch: ## Run tests in watch mode
 	@echo "Running tests in watch mode..."
 	@uv sync --extra test
 	@uv run pytest-watch
+
+.PHONY: lint
+lint: ## Run linting with ruff
+	@echo "Running linting..."
+	@uv sync --extra dev
+	@uv run ruff check .
+
+.PHONY: format
+format: ## Format code with ruff
+	@echo "Formatting code..."
+	@uv sync --extra dev
+	@uv run ruff format .
+
+.PHONY: lint-fix
+lint-fix: ## Fix linting issues with ruff
+	@echo "Fixing linting issues..."
+	@uv sync --extra dev
+	@uv run ruff check --fix .
+
+.PHONY: check
+check: lint test ## Run linting and tests
