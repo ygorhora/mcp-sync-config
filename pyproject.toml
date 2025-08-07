@@ -3,7 +3,16 @@ name = "mcp-claude-config"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.13.2"
+requires-python = ">=3.13"
 dependencies = [
     "questionary>=2.0.1",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-mock>=3.11.1",
+    "pytest-watch>=4.2.0",
+    "responses>=0.23.3",
 ]
