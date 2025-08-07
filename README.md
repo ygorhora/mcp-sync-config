@@ -257,7 +257,14 @@ mcp-sync --url https://gist.githubusercontent.com/user/id/raw/mcpServers.json
 #### Backup and Restore
 
 ```bash
-# Backups are created automatically, but you can also:
+# Backups are created automatically with timestamps
+# List all backup files
+make list-backups
+
+# Clean up old backup files (with confirmation)
+make clean-backups
+
+# Manual backup
 cp ~/.claude.json ~/.claude.json.manual-backup
 
 # Restore from backup
@@ -300,6 +307,8 @@ Always use `mcpServers.json.example` as a template and keep your actual configur
 - `make install-system` - Install to /usr/local/bin (requires sudo)
 - `make uninstall` - Remove installed script
 - `make clean` - Clean generated files
+- `make list-backups` - List all .claude.json backup files
+- `make clean-backups` - Clean .claude.json backup files (with confirmation)
 
 ## Troubleshooting
 

@@ -128,6 +128,40 @@ clean: ## Clean generated files
 	@find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 	@echo "Cleaned generated files"
 
+.PHONY: clean-backups
+clean-backups: ## Clean .claude.json backup files
+	@echo "Searching for .claude.json backup files in home directory..."
+	@BACKUP_DIR="$${HOME}"; \
+	BACKUP_COUNT=$$(ls $$BACKUP_DIR/.claude.json.backup.* 2>/dev/null | wc -l); \
+	if [ $$BACKUP_COUNT -eq 0 ]; then \
+		echo "No backup files found."; \
+	else \
+		echo "Found $$BACKUP_COUNT backup file(s):"; \
+		ls -la $$BACKUP_DIR/.claude.json.backup.* 2>/dev/null | while read line; do \
+			echo "  $$line"; \
+		done; \
+		echo ""; \
+		read -p "Delete all backup files? [y/N] " -n 1 -r; \
+		echo ""; \
+		if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
+			rm -f $$BACKUP_DIR/.claude.json.backup.*; \
+			echo "✓ Deleted $$BACKUP_COUNT backup file(s)"; \
+		else \
+			echo "Cancelled. No files deleted."; \
+		fi \
+	fi
+
+.PHONY: list-backups
+list-backups: ## List all .claude.json backup files
+	@echo "Listing .claude.json backup files in home directory..."
+	@BACKUP_DIR="$${HOME}"; \
+	if ls $$BACKUP_DIR/.claude.json.backup.* >/dev/null 2>&1; then \
+		echo "Found backup files:"; \
+		ls -lht $$BACKUP_DIR/.claude.json.backup.* | awk '{print "  " $$9 " (" $$5 ", " $$6 " " $$7 " " $$8 ")"}'; \
+	else \
+		echo "No backup files found."; \
+	fi
+
 .PHONY: test
 test: ## Run tests
 	@echo "Running tests..."
