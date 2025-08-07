@@ -23,6 +23,13 @@ help: ## Show this help message
 .PHONY: install
 install: install-user ## Install for current user (default)
 
+.PHONY: update
+update: ## Update installation (uninstall then install)
+	@echo "Updating mcp-sync..."
+	@$(MAKE) -s uninstall
+	@$(MAKE) -s install
+	@echo "Update complete!"
+
 .PHONY: deps
 deps: ## Install Python dependencies
 	@echo "Installing Python dependencies..."

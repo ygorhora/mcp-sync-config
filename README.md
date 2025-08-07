@@ -60,6 +60,9 @@ mcp-sync --project /path/to/your/project
 # Load MCP servers from a URL
 mcp-sync --url https://example.com/mcpServers.json
 
+# Edit mcpServers.json before syncing
+mcp-sync --edit
+
 # Show help
 mcp-sync --help
 ```
@@ -78,6 +81,9 @@ uv run python main.py --project /path/to/your/project
 # Load MCP servers from a URL
 uv run python main.py --url https://example.com/mcpServers.json
 
+# Edit mcpServers.json before syncing
+uv run python main.py --edit
+
 # Custom file paths
 uv run python main.py --mcp-file /path/to/mcpServers.json --claude-config /path/to/.claude.json
 ```
@@ -89,6 +95,7 @@ uv run python main.py --mcp-file /path/to/mcpServers.json --claude-config /path/
 - Shows current status (enabled/disabled) for each server
 - Syncs by server name (e.g., mem0, mcp-postgres-production-phoenix)
 - Load MCP server configurations from a URL
+- Edit mcpServers.json directly from the CLI
 - Creates automatic backup of `.claude.json` before modifications
 - Supports both global and project-specific mcpServers configurations
 - Preserves all other settings in `.claude.json`
@@ -106,6 +113,7 @@ uv run python main.py --mcp-file /path/to/mcpServers.json --claude-config /path/
 - `--project, -p`: Project path to update (defaults to global mcpServers)
 - `--mcp-file, -m`: Path to mcpServers.json file (default: `mcpServers.json`)
 - `--url, -u`: URL to fetch mcpServers.json from (overrides --mcp-file)
+- `--edit, -e`: Edit mcpServers.json before syncing (not available with --url)
 - `--claude-config, -c`: Path to .claude.json file (default: `~/.claude.json`)
 - `--help, -h`: Show help message
 
@@ -123,6 +131,7 @@ Always use `mcpServers.json.example` as a template and keep your actual configur
 
 - `make help` - Show all available commands
 - `make install` - Install for current user (default)
+- `make update` - Update installation (uninstall then install)
 - `make install-user` - Install to ~/.local/bin
 - `make install-system` - Install to /usr/local/bin (requires sudo)
 - `make uninstall` - Remove installed script
