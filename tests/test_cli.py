@@ -1,5 +1,6 @@
 """Tests for CLI and argument parsing."""
 
+import json
 import pytest
 from pathlib import Path
 from unittest.mock import patch, MagicMock
@@ -28,6 +29,7 @@ class TestArgumentParsing:
                 assert args.mcp_file == 'mcpServers.json'
                 assert args.url is None
                 assert args.edit is False
+                assert args.binding is False
                 assert args.claude_config == '~/.claude.json'
     
     def test_project_argument(self):
@@ -76,6 +78,29 @@ class TestArgumentParsing:
             
             captured = capsys.readouterr()
             assert "Error: --edit option cannot be used with --url" in captured.out
+    
+    def test_binding_argument(self):
+        """Test --binding argument."""
+        with patch('sys.argv', ['main.py', '--binding']):
+            with patch('main.run_sync') as mock_run:
+                try:
+                    main()
+                except SystemExit:
+                    pass
+                
+                args = mock_run.call_args[0][0]
+                assert args.binding is True
+    
+    def test_binding_with_url_error(self, capsys):
+        """Test that --binding with --url causes error."""
+        with patch('sys.argv', ['main.py', '--binding', '--url', 'http://example.com']):
+            with pytest.raises(SystemExit) as exc_info:
+                main()
+            
+            assert exc_info.value.code == 1
+            
+            captured = capsys.readouterr()
+            assert "Error: --binding option cannot be used with --url" in captured.out
     
 
 
@@ -217,3 +242,68 @@ class TestRunSync:
         
         captured = capsys.readouterr()
         assert "Operation cancelled" in captured.out
+    
+    def test_binding_mode_with_new_servers(self, capsys, mock_args, temp_dir):
+        """Test binding mode when there are new servers in .claude.json."""
+        mock_args.binding = True
+        mock_args.mcp_file = str(temp_dir / "mcpServers.json")
+        mock_args.claude_config = str(temp_dir / "claude.json")
+        
+        # Create files with different servers
+        mcp_servers = {"server1": {"type": "sse", "url": "http://test1"}}
+        claude_config = {
+            "mcpServers": {
+                "server1": {"type": "sse", "url": "http://test1"},
+                "server2": {"type": "sse", "url": "http://test2"}  # New server
+            }
+        }
+        
+        with open(mock_args.mcp_file, 'w') as f:
+            json.dump(mcp_servers, f)
+        with open(mock_args.claude_config, 'w') as f:
+            json.dump(claude_config, f)
+        
+        with patch('questionary.checkbox') as mock_checkbox:
+            mock_checkbox.return_value.unsafe_ask.return_value = ["server1", "server2"]
+            
+            with patch('questionary.confirm') as mock_confirm:
+                mock_confirm.return_value.unsafe_ask.return_value = True
+                
+                run_sync(mock_args)
+        
+        # Check that mcpServers.json was updated
+        with open(mock_args.mcp_file, 'r') as f:
+            updated_mcp = json.load(f)
+        
+        assert "server2" in updated_mcp
+        assert updated_mcp["server2"]["url"] == "http://test2"
+        
+        captured = capsys.readouterr()
+        assert "Found 1 server(s) in .claude.json not in mcpServers.json" in captured.out
+        assert "server2" in captured.out
+        assert "Added 1 server(s) to mcpServers.json" in captured.out
+    
+    def test_binding_mode_no_new_servers(self, capsys, mock_args, temp_dir):
+        """Test binding mode when there are no new servers."""
+        mock_args.binding = True
+        mock_args.mcp_file = str(temp_dir / "mcpServers.json")
+        mock_args.claude_config = str(temp_dir / "claude.json")
+        
+        # Create files with same servers
+        servers = {"server1": {"type": "sse", "url": "http://test1"}}
+        
+        with open(mock_args.mcp_file, 'w') as f:
+            json.dump(servers, f)
+        with open(mock_args.claude_config, 'w') as f:
+            json.dump({"mcpServers": servers}, f)
+        
+        with patch('questionary.checkbox') as mock_checkbox:
+            mock_checkbox.return_value.unsafe_ask.return_value = ["server1"]
+            
+            with patch('questionary.confirm') as mock_confirm:
+                mock_confirm.return_value.unsafe_ask.return_value = True
+                
+                run_sync(mock_args)
+        
+        captured = capsys.readouterr()
+        assert "No new servers found in .claude.json to add to mcpServers.json" in captured.out

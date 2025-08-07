@@ -106,6 +106,7 @@ def mock_args():
         mcp_file = "mcpServers.json"
         url = None
         edit = False
+        binding = False
         claude_config = "~/.claude.json"
     
     return Args()
