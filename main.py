@@ -18,6 +18,8 @@ import urllib.request
 import urllib.error
 import questionary
 from questionary import Choice
+from prompt_toolkit.key_binding import KeyBindings, merge_key_bindings
+from prompt_toolkit.keys import Keys
 
 
 def signal_handler(sig, frame):
@@ -256,25 +258,68 @@ def run_sync(args):
     print(f"Currently enabled: {len(current_servers)}")
     print()
     
-    # Create interactive selection
-    choices = create_server_choices(available_servers, current_servers)
-    
-    # Create checkbox prompt
-    question = questionary.checkbox(
-        "Select MCP servers to enable (↑↓ navigate, space to toggle, enter to confirm, Ctrl+C to cancel):",
-        choices=choices,
-        instruction=""
-    )
-    
-    try:
-        selected = question.unsafe_ask()  # unsafe_ask allows proper ESC handling
-    except (KeyboardInterrupt, EOFError, Exception) as e:
-        print("\nOperation cancelled.")
-        sys.exit(0)
-    
-    if selected is None:
-        print("\nOperation cancelled.")
-        sys.exit(0)
+    # Main selection loop
+    while True:
+        # Create interactive selection
+        choices = create_server_choices(available_servers, current_servers)
+        
+        # Build prompt message with all keyboard shortcuts
+        if using_url:
+            prompt_message = "Select MCP servers to enable (↑↓ navigate, space to toggle, enter to confirm, Ctrl+C to cancel):"
+        else:
+            prompt_message = "Select MCP servers to enable (↑↓ navigate, space to toggle, 'e' to edit, enter to confirm, Ctrl+C to cancel):"
+        
+        # Create checkbox prompt
+        question = questionary.checkbox(
+            prompt_message,
+            choices=choices
+        )
+        
+        # Flag to track if edit was requested
+        edit_requested = False
+        
+        # Create custom key bindings
+        kb = KeyBindings()
+        
+        @kb.add('e', eager=True)
+        def _(event):
+            nonlocal edit_requested
+            edit_requested = True
+            event.app.exit(result=[])
+        
+        # Add our custom key bindings to the question's application
+        if not using_url:
+            # Merge our key bindings with the existing ones
+            question.application.key_bindings = merge_key_bindings([kb, question.application.key_bindings])
+        
+        try:
+            selected = question.unsafe_ask()
+            
+            # Check if edit was requested
+            if edit_requested and not using_url:
+                print("\nOpening mcpServers.json in editor...")
+                if edit_json_file(mcp_file_path):
+                    print("File modified. Reloading configurations...\n")
+                    # Reload the modified file
+                    available_servers = load_json_file(mcp_file_path)
+                    if not available_servers:
+                        print("\nNo MCP servers found after edit!")
+                        print("Please add server configurations to the file.")
+                        sys.exit(0)
+                else:
+                    print("No changes made to the file.\n")
+                continue  # Go back to selection
+                
+        except (KeyboardInterrupt, EOFError, Exception) as e:
+            print("\nOperation cancelled.")
+            sys.exit(0)
+        
+        if selected is None:
+            print("\nOperation cancelled.")
+            sys.exit(0)
+        
+        # Exit the loop if not editing
+        break
     
     # Create new configuration
     new_servers = sync_mcp_servers(available_servers, selected)

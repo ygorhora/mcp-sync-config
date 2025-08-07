@@ -34,6 +34,7 @@ MCP Claude Config Sync Tool is a sophisticated command-line utility designed to 
 - 🎨 **Multi-Project Support** - Manage global configurations or project-specific settings
 - 🌐 **Remote Configuration Loading** - Fetch MCP configurations from URLs for team standardization
 - ✏️ **Live Configuration Editing** - Edit your MCP servers directly from the CLI with your preferred editor
+- ⌨️ **Quick Edit Shortcut** - Press 'e' during selection to instantly edit mcpServers.json
 - 💾 **Automatic Backups** - Never lose your configurations with automatic timestamped backups
 - 🔄 **Smart Sync** - Intelligently merges configurations while preserving existing settings
 
@@ -214,7 +215,7 @@ Syncing global MCP servers
 Available servers: 3
 Currently enabled: 1
 
-Select MCP servers to enable (↑↓ navigate, space to toggle, enter to confirm, Ctrl+C to cancel):
+Select MCP servers to enable (↑↓ navigate, space to toggle, 'e' to edit, enter to confirm, Ctrl+C to cancel):
 ❯ ◉ mem0 (SSE: http://localhost:8765/mcp/claude/sse/root)
   ◯ postgres-dev (Command: docker)
   ◯ my-custom-api (SSE: https://api.example.com/mcp)

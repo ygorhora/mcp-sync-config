@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for global and project-specific configurations
 - URL-based configuration loading
 - Built-in editor integration with `--edit` flag
+- Press 'e' during selection to edit mcpServers.json
 - Automatic backup creation before modifications
 - Comprehensive test suite
 - Installation via Makefile
