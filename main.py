@@ -172,6 +172,43 @@ def edit_json_file(filepath: Path) -> bool:
         return False
 
 
+def clean_backup_files(claude_config_path: Path) -> None:
+    """Clean up .claude.json backup files."""
+    backup_dir = claude_config_path.parent
+    backup_pattern = ".claude.backup.*.json"
+    
+    # Find all backup files
+    backup_files = list(backup_dir.glob(backup_pattern))
+    
+    if not backup_files:
+        print("No backup files found.")
+        return
+    
+    # Sort by modification time (newest first)
+    backup_files.sort(key=lambda f: f.stat().st_mtime, reverse=True)
+    
+    print(f"Found {len(backup_files)} backup file(s):")
+    for backup_file in backup_files:
+        stat = backup_file.stat()
+        mod_time = datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d %H:%M:%S")
+        size = f"{stat.st_size:,}" if stat.st_size < 1024 else f"{stat.st_size/1024:.1f}K"
+        print(f"  {backup_file.name} ({size} bytes, {mod_time})")
+    
+    print()
+    # Use questionary for confirmation
+    confirm = questionary.confirm(
+        "Delete all backup files?",
+        default=False
+    ).ask()
+    
+    if confirm:
+        for backup_file in backup_files:
+            backup_file.unlink()
+        print(f"✓ Deleted {len(backup_files)} backup file(s)")
+    else:
+        print("Cancelled. No files deleted.")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Sync MCP servers between mcpServers.json and ~/.claude.json")
     parser.add_argument("--project", "-p", type=str, help="Project path to update (defaults to global mcpServers)")
@@ -187,6 +224,9 @@ def main():
         help="Update mcpServers.json with servers from .claude.json (not available with --url)",
     )
     parser.add_argument("--claude-config", "-c", type=str, default="~/.claude.json", help="Path to .claude.json file")
+    parser.add_argument(
+        "--clean", action="store_true", help="Clean up .claude.json backup files"
+    )
     args = parser.parse_args()
 
     # Validate that --edit is not used with --url
@@ -212,6 +252,11 @@ def main():
 def run_sync(args):
     # Resolve paths
     claude_config_path = Path(args.claude_config).expanduser().resolve()
+    
+    # Handle clean mode if requested
+    if args.clean:
+        clean_backup_files(claude_config_path)
+        return
 
     # Determine if we're using URL or local file
     using_url = bool(args.url)

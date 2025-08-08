@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Installation via Makefile
 - Support for Linux and WSL2
 - Makefile commands for backup management (list-backups, clean-backups)
+- `--clean` flag to clean up .claude.json backup files directly from mcp-sync command
 
 ### Features
 - Sync MCP servers between mcpServers.json and ~/.claude.json

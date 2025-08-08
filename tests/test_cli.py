@@ -31,6 +31,19 @@ class TestArgumentParsing:
                 assert args.edit is False
                 assert args.binding is False
                 assert args.claude_config == "~/.claude.json"
+                assert args.clean is False
+
+    def test_clean_argument(self):
+        """Test --clean argument."""
+        with patch("sys.argv", ["main.py", "--clean"]):
+            with patch("main.run_sync") as mock_run:
+                try:
+                    main()
+                except SystemExit:
+                    pass
+
+                args = mock_run.call_args[0][0]
+                assert args.clean is True
 
     def test_project_argument(self):
         """Test --project argument."""
@@ -306,3 +319,62 @@ class TestRunSync:
 
         captured = capsys.readouterr()
         assert "No new servers found in .claude.json to add to mcpServers.json" in captured.out
+
+    def test_clean_mode_with_backups(self, capsys, mock_args, temp_dir):
+        """Test clean mode when backup files exist."""
+        mock_args.clean = True
+        mock_args.claude_config = str(temp_dir / ".claude.json")
+        
+        # Create some backup files
+        backup1 = temp_dir / ".claude.backup.20240101_120000.json"
+        backup2 = temp_dir / ".claude.backup.20240102_130000.json"
+        
+        backup1.write_text('{"test": "backup1"}')
+        backup2.write_text('{"test": "backup2"}')
+        
+        # Mock questionary to confirm deletion
+        with patch("questionary.confirm") as mock_confirm:
+            mock_confirm.return_value.ask.return_value = True
+            
+            run_sync(mock_args)
+        
+        # Check that backup files were deleted
+        assert not backup1.exists()
+        assert not backup2.exists()
+        
+        captured = capsys.readouterr()
+        assert "Found 2 backup file(s):" in captured.out
+        assert ".claude.backup.20240101_120000.json" in captured.out
+        assert ".claude.backup.20240102_130000.json" in captured.out
+        assert "✓ Deleted 2 backup file(s)" in captured.out
+
+    def test_clean_mode_no_backups(self, capsys, mock_args, temp_dir):
+        """Test clean mode when no backup files exist."""
+        mock_args.clean = True
+        mock_args.claude_config = str(temp_dir / ".claude.json")
+        
+        run_sync(mock_args)
+        
+        captured = capsys.readouterr()
+        assert "No backup files found." in captured.out
+
+    def test_clean_mode_cancelled(self, capsys, mock_args, temp_dir):
+        """Test clean mode when user cancels deletion."""
+        mock_args.clean = True
+        mock_args.claude_config = str(temp_dir / ".claude.json")
+        
+        # Create a backup file
+        backup = temp_dir / ".claude.backup.20240101_120000.json"
+        backup.write_text('{"test": "backup"}')
+        
+        # Mock questionary to cancel deletion
+        with patch("questionary.confirm") as mock_confirm:
+            mock_confirm.return_value.ask.return_value = False
+            
+            run_sync(mock_args)
+        
+        # Check that backup file still exists
+        assert backup.exists()
+        
+        captured = capsys.readouterr()
+        assert "Cancelled. No files deleted." in captured.out

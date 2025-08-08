@@ -165,6 +165,9 @@ mcp-sync --url https://example.com/mcpServers.json
 # Edit mcpServers.json before syncing
 mcp-sync --edit
 
+# Clean up .claude.json backup files
+mcp-sync --clean
+
 # Show help
 mcp-sync --help
 ```
@@ -275,6 +278,9 @@ make list-backups
 # Clean up old backup files (with confirmation)
 make clean-backups
 
+# Or use the mcp-sync command directly
+mcp-sync --clean
+
 # Manual backup
 cp ~/.claude.json ~/.claude.json.manual-backup
 
@@ -298,6 +304,7 @@ cp ~/.claude.backup.20240101_120000.json ~/.claude.json
 - `--edit, -e`: Edit mcpServers.json before syncing (not available with --url)
 - `--binding, -b`: Update mcpServers.json with servers from .claude.json (not available with --url)
 - `--claude-config, -c`: Path to .claude.json file (default: `~/.claude.json`)
+- `--clean`: Clean up .claude.json backup files
 - `--help, -h`: Show help message
 
 ## Security Note

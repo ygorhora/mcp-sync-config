@@ -92,5 +92,6 @@ def mock_args():
         edit = False
         binding = False
         claude_config = "~/.claude.json"
+        clean = False
 
     return Args()
