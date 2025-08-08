@@ -1,14 +1,42 @@
 {
-  "mem0": {
-    "type": "sse",
-    "url": "http://localhost:8765/mcp/claude/sse/root"
+  "github": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-github"
+    ],
+    "env": {
+      "GITHUB_PERSONAL_ACCESS_TOKEN": "ghp_1234567890abcdefghijklmnopqrstuvwxyz"
+    }
   },
-  "mcp-postgres-example": {
+  "gitlab": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-gitlab"
+    ],
+    "env": {
+      "GITLAB_PERSONAL_ACCESS_TOKEN": "glpat-xxxxxxxxxxxxxxxxxxxx",
+      "GITLAB_API_URL": "https://gitlab.example.com/api/v4"
+    }
+  },
+  "slack": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-slack"
+    ],
+    "env": {
+      "SLACK_BOT_TOKEN": "xoxb-1234567890-1234567890123-abcdefghijklmnopqrstuvwx",
+      "SLACK_TEAM_ID": "T1234567890"
+    }
+  },
+  "postgres": {
     "command": "docker",
     "args": [
       "run",
       "--name",
-      "mcp-postgres-example",
+      "mcp-postgres",
       "-i",
       "--rm",
       "-e",
@@ -17,7 +45,65 @@
       "--access-mode=restricted"
     ],
     "env": {
-      "DATABASE_URI": "postgresql://username:password@host:5432/database_name"
+      "DATABASE_URI": "postgresql://dbuser:secretpassword@db.example.com:5432/myapp_production"
     }
+  },
+  "sqlite": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-sqlite",
+      "--db-path",
+      "/path/to/database.sqlite"
+    ]
+  },
+  "filesystem": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-filesystem",
+      "/home/user/projects",
+      "/var/log/app"
+    ]
+  },
+  "google-drive": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-gdrive"
+    ],
+    "env": {
+      "GOOGLE_DRIVE_CLIENT_ID": "123456789012-abcdefghijklmnopqrstuvwxyz123456.apps.googleusercontent.com",
+      "GOOGLE_DRIVE_CLIENT_SECRET": "GOCSPX-1234567890abcdefghijklmn",
+      "GOOGLE_DRIVE_REDIRECT_URI": "http://localhost:3000/oauth/callback"
+    }
+  },
+  "aws": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-aws"
+    ],
+    "env": {
+      "AWS_ACCESS_KEY_ID": "AKIAIOSFODNN7EXAMPLE",
+      "AWS_SECRET_ACCESS_KEY": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+      "AWS_REGION": "us-west-2"
+    }
+  },
+  "memory": {
+    "type": "sse",
+    "url": "http://localhost:8765/sse",
+    "headers": {
+      "Authorization": "Bearer mem0_token_1234567890abcdefghijklmnopqrstuvwxyz"
+    }
+  },
+  "puppeteer": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-puppeteer",
+      "--headless=true",
+      "--screenshot-dir=/tmp/screenshots"
+    ]
   }
 }
