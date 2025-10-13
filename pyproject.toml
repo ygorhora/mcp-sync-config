@@ -3,7 +3,7 @@ name = "mcp-sync-config"
 version = "0.1.0"
 description = "Interactive CLI tool for managing Model Context Protocol (MCP) servers (currently only Claude Code)"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.12"
 dependencies = [
     "questionary>=2.0.1",
 ]
@@ -18,7 +18,7 @@ classifiers = [
     "Topic :: Utilities",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.12",
     "Operating System :: POSIX :: Linux",
     "Environment :: Console",
 ]
