@@ -193,6 +193,46 @@ uv run python main.py --edit
 uv run python main.py --mcp-file /path/to/mcpServers.json --claude-config /path/to/.claude.json
 ```
 
+### Creating a Custom Alias
+
+If you want to create a shorter command that always uses a specific `mcpServers.json` file, you can set up a shell alias using the Makefile:
+
+```bash
+# Setup 'ms' alias that points to your custom mcpServers.json
+make setup-alias path=$(pwd)/mcpServers.json
+
+# Or with an absolute path
+make setup-alias path=/path/to/your/mcpServers.json
+
+# Or in your home directory
+make setup-alias path=~/mcpServers.json
+```
+
+This will:
+- Detect your shell (bash/zsh) automatically
+- Add the alias to your shell configuration file (.zshrc/.bashrc)
+- Create the `ms` command that runs `mcp-sync --mcp-file /your/path`
+
+**After setup, restart your terminal**
+
+**Now use the `ms` shortcut:**
+```bash
+ms              # Sync with your custom path
+ms --edit       # Edit before syncing
+ms --binding    # Update from .claude.json
+ms --project /path/to/project  # Project-specific sync
+```
+
+**Remove the alias when no longer needed:**
+```bash
+make uninstall-alias
+```
+
+This is useful when:
+- You have multiple `mcpServers.json` files for different contexts
+- You want a shorter command than typing the full path every time
+- You're working on a specific project and want quick access to its MCP configuration
+
 ## 🚀 Quick Start
 
 ### Step 1: Initial Setup
