@@ -121,6 +121,106 @@ uninstall: ## Remove installed script
 	fi
 	@echo "Uninstall complete"
 
+.PHONY: setup-alias
+setup-alias: ## Setup 'ms' alias for custom MCP file path (usage: make setup-alias path=/path/to/file)
+	@if [ -z "$(path)" ]; then \
+		echo "Error: path parameter is required"; \
+		echo "Usage: make setup-alias path=/path/to/mcpServers.json"; \
+		echo "Example: make setup-alias path=\$$(pwd)/mcpServers.json"; \
+		exit 1; \
+	fi
+	@echo "Setting up 'ms' alias for MCP file: $(path)"
+	@# Detect shell and rc file
+	@SHELL_NAME=$$(basename $$SHELL); \
+	if [ "$$SHELL_NAME" = "zsh" ]; then \
+		RC_FILE="$$HOME/.zshrc"; \
+	elif [ "$$SHELL_NAME" = "bash" ]; then \
+		if [ -f "$$HOME/.bashrc" ]; then \
+			RC_FILE="$$HOME/.bashrc"; \
+		else \
+			RC_FILE="$$HOME/.bash_profile"; \
+		fi; \
+	else \
+		echo "Warning: Unsupported shell '$$SHELL_NAME'. Defaulting to .bashrc"; \
+		RC_FILE="$$HOME/.bashrc"; \
+	fi; \
+	echo "Detected shell: $$SHELL_NAME"; \
+	echo "Using RC file: $$RC_FILE"; \
+	\
+	ALIAS_CMD="alias ms='mcp-sync --mcp-file $(path)'"; \
+	\
+	if [ -f "$$RC_FILE" ] && grep -q "alias ms=" "$$RC_FILE"; then \
+		echo ""; \
+		echo "⚠️  Warning: 'ms' alias already exists in $$RC_FILE"; \
+		echo "  Existing line:"; \
+		grep "alias ms=" "$$RC_FILE" | sed 's/^/  /'; \
+		echo ""; \
+		printf "  Overwrite? [y/N] "; \
+		read REPLY; \
+		case $$REPLY in \
+			[yY]) \
+				if [ "$$(uname)" = "Darwin" ]; then \
+					sed -i '' '/alias ms=/d' "$$RC_FILE"; \
+				else \
+					sed -i '/alias ms=/d' "$$RC_FILE"; \
+				fi; \
+				echo "$$ALIAS_CMD" >> "$$RC_FILE"; \
+				echo "✓ Updated 'ms' alias in $$RC_FILE"; \
+				;; \
+			*) \
+				echo "Cancelled. No changes made."; \
+				exit 0; \
+				;; \
+		esac \
+	else \
+		echo "" >> "$$RC_FILE"; \
+		echo "# MCP Sync alias - added by make setup-alias" >> "$$RC_FILE"; \
+		echo "$$ALIAS_CMD" >> "$$RC_FILE"; \
+		echo "✓ Added 'ms' alias to $$RC_FILE"; \
+	fi; \
+	echo ""; \
+	echo "To use the alias in your current shell, run:"; \
+	echo "  source $$RC_FILE"; \
+	echo ""; \
+	echo "Or restart your terminal."; \
+	echo ""; \
+	echo "You can now use: ms [options]"
+
+.PHONY: uninstall-alias
+uninstall-alias: ## Remove 'ms' alias from shell configuration
+	@echo "Removing 'ms' alias..."
+	@SHELL_NAME=$$(basename $$SHELL); \
+	if [ "$$SHELL_NAME" = "zsh" ]; then \
+		RC_FILE="$$HOME/.zshrc"; \
+	elif [ "$$SHELL_NAME" = "bash" ]; then \
+		if [ -f "$$HOME/.bashrc" ]; then \
+			RC_FILE="$$HOME/.bashrc"; \
+		else \
+			RC_FILE="$$HOME/.bash_profile"; \
+		fi; \
+	else \
+		RC_FILE="$$HOME/.bashrc"; \
+	fi; \
+	\
+	if [ -f "$$RC_FILE" ] && grep -q "alias ms=" "$$RC_FILE"; then \
+		echo "Found 'ms' alias in $$RC_FILE"; \
+		if [ "$$(uname)" = "Darwin" ]; then \
+			sed -i '' '/# MCP Sync alias - added by make setup-alias/d' "$$RC_FILE"; \
+			sed -i '' '/alias ms=/d' "$$RC_FILE"; \
+		else \
+			sed -i '/# MCP Sync alias - added by make setup-alias/d' "$$RC_FILE"; \
+			sed -i '/alias ms=/d' "$$RC_FILE"; \
+		fi; \
+		echo "✓ Removed 'ms' alias from $$RC_FILE"; \
+		echo ""; \
+		echo "To apply changes in your current shell, run:"; \
+		echo "  source $$RC_FILE"; \
+		echo ""; \
+		echo "Or restart your terminal."; \
+	else \
+		echo "No 'ms' alias found in $$RC_FILE"; \
+	fi
+
 .PHONY: clean
 clean: ## Clean generated files
 	@rm -f $(WRAPPER_SCRIPT)
